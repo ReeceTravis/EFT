@@ -6,9 +6,9 @@
 <head runat="server">
     <title></title>
 </head>
-<body>
+<body style="background:url(../images/thc.jpg) no-repeat 100% 0;">
     <form id="form1" runat="server">
-        < <h1>Standard Bank EFT Payment</h1>
+        <h1>Easy EFT Payment</h1>
         <asp:Label ID="Label1" runat="server" Text="OTP"></asp:Label>
         <asp:TextBox ID="OTP" runat="server"></asp:TextBox>
         <br><br />
