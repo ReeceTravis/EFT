@@ -3,6 +3,9 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System.Threading;
+using System.IO;
+using System.Reflection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /// <summary>
 /// Summary description for LibraryUtils
@@ -161,6 +164,9 @@ public static class LibraryUtils
     {
         WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
+        Random generator = new Random();
+        String r = generator.Next(0, 999999).ToString("D6");
+
         wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text() = 'PAY']"))).Click();
 
         wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//li[text() = 'Once-off payment']"))).Click();
@@ -173,7 +179,7 @@ public static class LibraryUtils
 
         wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//input[@id = 'myReference']"))).SendKeys("eft test");
 
-        wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//input[@id = 'beneficiaryReference']"))).SendKeys("eftref3");
+        wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//input[@id = 'beneficiaryReference']"))).SendKeys(r);
 
         wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//input[@id = 'Recipient_Name']"))).SendKeys("Traverse");
 
@@ -191,11 +197,23 @@ public static class LibraryUtils
         wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//span[text() = 'Confirm']/.."))).Click();
     }
 
+    [DeploymentItem(@"chromedriver.exe")]
+
+
     public static void EmailLogin(String email, String password)
     {
         ChromeOptions option = new ChromeOptions();
         option.AddArguments("--headless", "--disable-gpu", "--window-size=1200,900");
-        driver = new ChromeDriver("C:\\Users\\Public", option);
+        //System.Environment.SetEnvironmentVariable("webdriver.chrome.driver", @"C:\EFT\chromedriver.exe");
+        //driver = new ChromeDriver("C:\\EFT", option);
+        var service = ChromeDriverService.CreateDefaultService(AppDomain.CurrentDomain.BaseDirectory);
+        //Convert.ToString(service);
+        //option.BinaryLocation = Convert.ToString(service);
+        //string opt = Convert.ToString(service);
+        //opt += @".chromedriver";
+        //option.BinaryLocation = @"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe";
+        //System.Environment.SetEnvironmentVariable("webdriver.chrome.driver", service.ToString());
+        driver = new ChromeDriver(service, option);
 
         driver.Navigate().GoToUrl("https://onlinebanking.standardbank.co.za/#/login?intcmp=coza-sitewide-headernav-direct-login");
         WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
